@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>واجهة الطالب</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #fff;
+      margin: 0;
+    }
+    .header {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ffffff;
+    }
+    .header .settings {
+      text-align: right;
+      margin-left: 10px;
+    }
+    .header .settings i {
+      font-size: 24px;
+    }
+
+    .header .user {
+      display: flex;
+      align-items: center;
+      text-align: right;
+      margin-right: 10px;
+    }
+    .header .user i {
+      font-size: 24px;
+      margin-left: 8px;
+      color: #003366;
+    }
+    .welcome {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      padding: 20px;
+    }
+    .item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+   .item :hover{
+   transform: scale(0.8);
+   }
+    .item img {
+      width: 80px;
+      height: 80px;
+    }
+    .item span {
+      margin-top: 10px;
+      color: #003366;
+      font-weight: bold;
+    }
+    .bottom-menu {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ffffff;
+      padding: 10px 0;
+    }
+    .bottom-menu i :hover{
+      font-size: 24px;
+    }
+    .info {
+      color: rgb(37, 127, 168);
+      margin-right: 10px;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="user">
+      <i class="fa fa-user"></i>
+      <div class="info">
+        <div><strong id="studentName"></strong></div>
+        <div><strong id="studentGrade"></strong></div>
+      </div>
+    </div>
+    <div class="settings" onclick="window.location.href='setting.html'">
+      <i class="fa fa-cog"></i>
+    </div>
+  </div>
+
+  <div class="llllo" style="color: burlywood; height: 12px;">_____________</div>
+  <div class="welcome">مرحباً بك</div>
+
+  <div class="grid">
+    <div class="item" onclick="window.location.href='exam.html'">
+      <img src="https://cdn-icons-png.flaticon.com/128/12886/12886027.png" alt="الامتحانات الإلكترونية">
+      <span>الإمتحانات الإلكترونية</span>
+    </div>
+    <div class="item" onclick="window.location.href='time.html'">
+      <img src="https://cdn-icons-png.flaticon.com/128/12886/12886126.png" alt="جدول الحصص">
+      <span>جدول الحصص</span>
+    </div>
+    <div class="item" onclick="window.location.href='homework.html'">
+      <img src="https://cdn-icons-png.flaticon.com/128/5832/5832416.png" alt="الواجب">
+      <span>الواجب</span>
+    </div>
+    <div class="item" onclick="window.location.href='info.html'">
+      <img src="https://cdn-icons-png.flaticon.com/128/10156/10156019.png" alt="معلومات الطالب">
+      <span>معلومات الطالب</span>
+    </div>
+    <div class="item" onclick="window.location.href='mony.html'">
+      <img src="https://cdn-icons-png.flaticon.com/128/806/806741.png" alt="المصاريف">
+      <span>المصاريف</span>
+    </div>
+    <div class="item" onclick="window.location.href='test.html'">
+      <img src="https://cdn-icons-png.flaticon.com/128/2666/2666505.png" alt="تقييم الطالب">
+      <span>تقييم الطالب</span>
+    </div>
+  </div>
+
+  <div class="bottom-menu">
+    <i class="fa fa-home" style="color: rgb(156, 131, 97);" onclick="window.location.href='home.html'"></i>
+    <i class="fa fa-user" style="color: orange;" onclick="window.location.href='user.html'"></i>
+    <i class="fa fa-blog" style="color: green;" onclick="window.location.href='blog.html'"></i>
+    <i class="fa fa-sign-out" style="color:red;" onclick="window.location.href='start.html'"></i>
+  </div>
+
+  <script>
+     // استرجاع بيانات الطالب من localStorage
+        const studentData = JSON.parse(localStorage.getItem('studentData'));
+
+        // التحقق من وجود بيانات الطالب
+        if (studentData) {
+            document.getElementById('studentName').textContent = studentData.name;
+            document.getElementById('studentGrade').textContent = ` ${studentData.grade}`;
+            document.getElementById('studentAge').textContent = `العمر: ${studentData.age}`;
+            document.getElementById('studentInfo').textContent = `معلومات إضافية: ${studentData.info}`;
+        } else {
+            // إعادة التوجيه إلى صفحة إدخال الكود إذا لم تكن هناك بيانات
+            window.location.href = 'code.html';
+        }
+    </script>
+</body>
+</html>

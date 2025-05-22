@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الامتحان الإلكتروني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #1da0b8b6;
+            --secondary-dark: #27ae60;
+            --danger-color: #e74c3c;
+            --danger-dark: #c0392b;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Tajawal', 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+        
+        /* شريط التنقل */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .nav-icon:hover {
+            transform: translateY(-3px);
+            color: var(--light-color);
+        }
+        
+        .nav-icon span {
+            font-size: 0.7rem;
+            margin-top: 5px;
+        }
+        
+        /* واجهة اختيار الصفوف (صفحة كاملة) */
+        .grades-page {
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .grade-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-size: 1.5rem;
+        }
+        
+        .grade-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .grade-level {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border: 2px solid #eee;
+        }
+        
+        .grade-level:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .grade-level.primary {
+            border-top: 4px solid #3498db;
+        }
+        
+        .grade-level.middle {
+            border-top: 4px solid #2ecc71;
+        }
+        
+        .grade-level.secondary {
+            border-top: 4px solid #e74c3c;
+        }
+        
+        .grade-level h3 {
+            color: var(--dark-color);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .grade-level p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* واجهة الامتحان */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .exam-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-right: 4px solid #3498db;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+        
+        .question:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .options {
+            margin-top: 10px;
+        }
+        
+        .option {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+        }
+        
+        .option input {
+            margin-left: 10px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+            font-size: 18px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .correct-answer {
+            background-color: #fcfcfc !important;
+            border-left: 4px solid #a9f3ba;
+        }
+        
+        .wrong-answer {
+            background-color: #fcfcfc !important;
+            border-left: 4px solid #a9f3ba;
+        }
+        
+        /* إخفاء صفحة الصفوف عند عرض الامتحان */
+        .grades-page.hidden {
+            display: none;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo"> </div>
+            <div class="nav-icons">
+                <div class="nav-icon" onclick="window.location.href='home.html'">
+                    <i class="fas fa-home"></i>
+                    <span>الرئيسية</span>
+                </div>
+                <div class="nav-icon" onclick="window.location.href='blog.html'">
+                    <i class="fas fa-blog"></i>
+                    <span>blog</span>
+                </div>
+                <div class="nav-icon" onclick="window.location.href='start.html'">
+                    <i class="fas fa-sign-out" style="color:red;"></i>
+                    <span>تسجيل الخروج</span>
+                </div>
+                <div class="nav-icon" onclick="window.location.href='user.html'">
+                    <i class="fas fa-user"></i>
+                    <span>الملف الشخصي</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- صفحة اختيار الصفوف -->
+    <div class="grades-page" id="gradesPage">
+        <div class="page-header">
+            <h1>نظام الاختبارات الإلكترونية</h1>
+            <p>اختر صفك الدراسي للبدء في الامتحان(إختياري)</p>
+        </div>
+        
+        <div class="grade-section">
+            <h2 class="section-title">المرحلة الابتدائية</h2>
+            <div class="grade-levels">
+                <div class="grade-level primary" onclick="selectGrade('primary1')">
+                    <h3>الصف الأول</h3>
+                    <p>الابتدائي</p>
+                </div>
+                <div class="grade-level primary" onclick="selectGrade('primary2')">
+                    <h3>الصف الثاني</h3>
+                    <p>الابتدائي</p>
+                </div>
+                <div class="grade-level primary" onclick="selectGrade('primary3')">
+                    <h3>الصف الثالث</h3>
+                    <p>الابتدائي</p>
+                </div>
+                <div class="grade-level primary" onclick="selectGrade('primary4')">
+                    <h3>الصف الرابع</h3>
+                    <p>الابتدائي</p>
+                </div>
+                <div class="grade-level primary" onclick="selectGrade('primary5')">
+                    <h3>الصف الخامس</h3>
+                    <p>الابتدائي</p>
+                </div>
+                <div class="grade-level primary" onclick="selectGrade('primary6')">
+                    <h3>الصف السادس</h3>
+                    <p>الابتدائي</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grade-section">
+            <h2 class="section-title">المرحلة الإعداديه</h2>
+            <div class="grade-levels">
+                <div class="grade-level middle" onclick="selectGrade('middle1')">
+                    <h3>الصف الأول</h3>
+                    <p>الإعداديه</p>
+                </div>
+                <div class="grade-level middle" onclick="selectGrade('middle2')">
+                    <h3>الصف الثاني</h3>س
+                    <p>الإعداديه</p>
+                </div>
+                <div class="grade-level middle" onclick="selectGrade('middle3')">
+                    <h3>الصف الثالث</h3>
+                    <p>الإعداديه</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grade-section">
+            <h2 class="section-title">المرحلة الثانوية</h2>
+            <div class="grade-levels">
+                <div class="grade-level secondary" onclick="selectGrade('secondary1')">
+                    <h3>الصف الأول</h3>
+                    <p>الثانوي</p>
+                </div>
+                <div class="grade-level secondary" onclick="selectGrade('secondary2')">
+                    <h3>الصف الثاني</h3>
+                    <p>الثانوي</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- واجهة الامتحان -->
+    <div class="container" id="examContainer">
+        <h1 id="examTitle">الامتحان الإلكتروني</h1>
+        
+        <div class="exam-info">
+            <p><strong>الصف:</strong> <span id="gradeDisplay"></span></p>
+            <p><strong>المادة:</strong> <span id="subjectDisplay"></span></p>
+            <p><strong>الوقت المخصص:</strong> <span id="timeDisplay"></span></p>
+            <p><strong>عدد الأسئلة:</strong> <span id="questionsCount"></span></p>
+        </div>
+        
+        <div class="timer" id="timer">الوقت المتبقي: --:--</div>
+        
+        <form id="examForm">
+            <!-- سيتم إضافة الأسئلة ديناميكياً حسب الصف -->
+        </form>
+        
+        <button type="button" id="submitBtn">تسليم الإجابات</button>
+        
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // متغيرات الامتحان
+        let currentGrade = '';
+        let timeLeft = 0;
+        let timer;
+        const examContainer = document.getElementById('examContainer');
+        const gradesPage = document.getElementById('gradesPage');
+        const examForm = document.getElementById('examForm');
+        const timerElement = document.getElementById('timer');
+        const gradeDisplay = document.getElementById('gradeDisplay');
+        const subjectDisplay = document.getElementById('subjectDisplay');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const questionsCount = document.getElementById('questionsCount');
+        const examTitle = document.getElementById('examTitle');
+        
+        // بنك الأسئلة لكل صف
+        const questionsBank = {
+            primary1: {
+                title: "امتحان الرياضيات - الصف الأول الابتدائي",
+                subject: "الرياضيات",
+                time: "20 دقيقة",
+                questions: [
+                    {
+                        question: "ما هو ناتج جمع ٢ + ٣؟",
+                        options: ["٣", "٤", "٥", "٦"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما هو العدد الأكبر؟",
+                        options: ["٧", "٥", "٩", "٢"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما هو الشكل الذي له ٣ أضلاع؟",
+                        options: ["مربع", "مستطيل", "مثلث", "دائرة"],
+                        answer: 2
+                    }
+                ]
+            },
+            primary2: {
+                title: "امتحان الرياضيات - الصف الثاني الابتدائي",
+                subject: "الرياضيات",
+                time: "25 دقيقة",
+                questions: [
+                    {
+                        question: "ما هو ناتج جمع ٨ + ٦؟",
+                        options: ["١٢", "١٣", "١٤", "١٥"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما هو العدد الناقص في المتتالية: ٥، ١٠، __، ٢٠؟",
+                        options: ["١٢", "١٥", "١٨", "٢٥"],
+                        answer: 1
+                    },
+                    {
+                        question: "كم عدد أرجل العنكبوت؟",
+                        options: ["٦", "٨", "١٠", "٤"],
+                        answer: 1
+                    }
+                ]
+            },
+            // يمكنك إضافة المزيد من الأسئلة للصفوف الأخرى بنفس الطريقة
+            secondary2: {
+                title: "امتحان الرياضيات - الصف الثاني الثانوي",
+                subject: "الرياضيات",
+                time: "45 دقيقة",
+                questions: [
+                    {
+                        question: "ما هو حل المعادلة التربيعية س² - ٥س + ٦ = ٠؟",
+                        options: ["٢، ٣", "١، ٦", "-٢، -٣", "٥، ١"],
+                        answer: 0
+                    },
+                    {
+                        question: "ما هو مشتق الدالة ص = ٣س² + ٢س - ٥؟",
+                        options: ["٦س + ٢", "٣س + ٢", "٦س² + ٢", "٦س"],
+                        answer: 0
+                    },
+                    {
+                        question: "ما هو جا(٣٠°)?",
+                        options: ["٠.٥", "٠.٧٠٧", "٠.٨٦٦", "١"],
+                        answer: 0
+                    },
+                    {
+                        question: "ما هو حجم الكرة التي نصف قطرها ٧ سم؟ (π = 22/7)",
+                        options: ["١٤٣٧ سم³", "١٤٣٧.٣٣ سم³", "١٤٣٦ سم³", "١٤٠٠ سم³"],
+                        answer: 1
+                    }
+                ]
+            }
+        };
+        
+        // دالة اختيار الصف
+        function selectGrade(grade) {
+            currentGrade = grade;
+            gradesPage.classList.add('hidden');
+            setupExam(grade);
+            examContainer.style.display = "block";
+            
+            // إضافة تأثير تمرير ناعم
+            examContainer.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // دالة عرض صفحة الصفوف
+        function showGradesPage() {
+            examContainer.style.display = "none";
+            gradesPage.classList.remove('hidden');
+            clearInterval(timer);
+            
+            // إضافة تأثير تمرير ناعم
+            gradesPage.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // إعداد الامتحان حسب الصف المختار
+        function setupExam(grade) {
+            const examData = questionsBank[grade];
+            
+            // تعيين معلومات الامتحان
+            examTitle.textContent = examData.title;
+            gradeDisplay.textContent = getGradeName(grade);
+            subjectDisplay.textContent = examData.subject;
+            timeDisplay.textContent = examData.time;
+            questionsCount.textContent = examData.questions.length;
+            
+            // تحويل الوقت إلى ثواني
+            const timeInMinutes = parseInt(examData.time);
+            timeLeft = timeInMinutes * 60;
+            updateTimerDisplay();
+            
+            // إنشاء الأسئلة
+            examForm.innerHTML = '';
+            examData.questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.id = `q${index+1}`;
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option">
+                            <input type="radio" name="q${index+1}" value="${optIndex}"> ${opt}
+                        </label>
+                    `;
+                });
+                
+                questionDiv.innerHTML = `
+                    <h3>السؤال ${index+1}: ${q.question}</h3>
+                    <div class="options">${optionsHtml}</div>
+                `;
+                
+                examForm.appendChild(questionDiv);
+            });
+            
+            // بدء المؤقت
+            startTimer();
+            
+            // إضافة مستمع لزر التسليم
+            document.getElementById('submitBtn').addEventListener('click', submitExam);
+        }
+        
+        // دالة للحصول على اسم الصف بالعربية
+        function getGradeName(grade) {
+            const grades = {
+                'primary1': 'الصف الأول الابتدائي',
+                'primary2': 'الصف الثاني الابتدائي',
+                'primary3': 'الصف الثالث الابتدائي',
+                'primary4': 'الصف الرابع الابتدائي',
+                'primary5': 'الصف الخامس الابتدائي',
+                'primary6': 'الصف السادس الابتدائي',
+                'middle1': 'الصف الأول المتوسط',
+                'middle2': 'الصف الثاني المتوسط',
+                'middle3': 'الصف الثالث المتوسط',
+                'secondary1': 'الصف الأول الثانوي',
+                'secondary2': 'الصف الثاني الثانوي'
+            };
+            return grades[grade] || grade;
+        }
+        
+        // بدء المؤقت
+        function startTimer() {
+            clearInterval(timer);
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitExam();
+                    timerElement.textContent = "انتهى وقت الامتحان!";
+                    return;
+                }
+                
+                updateTimerDisplay();
+            }, 1000);
+        }
+        
+        // تحديث عرض المؤقت
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `الوقت المتبقي: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+        }
+        
+        // تسليم الامتحان
+        function submitExam() {
+            clearInterval(timer);
+            
+            const examData = questionsBank[currentGrade];
+            let score = 0;
+            const resultElement = document.getElementById('result');
+            
+            // حساب النتيجة
+            examData.questions.forEach((q, index) => {
+                const questionName = `q${index+1}`;
+                const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                
+                if (selectedOption) {
+                    const selectedValue = parseInt(selectedOption.value);
+                    
+                    if (selectedValue === q.answer) {
+                        score++;
+                        // تظليل الإجابة الصحيحة
+                        const correctOption = document.querySelector(`input[name="${questionName}"][value="${q.answer}"]`).parentElement;
+                        correctOption.classList.add('correct-answer');
+                    } else {
+                        // تظليل الإجابة الخاطئة
+                        selectedOption.parentElement.classList.add('wrong-answer');
+                        // تظليل الإجابة الصحيحة
+                        const correctOption = document.querySelector(`input[name="${questionName}"][value="${q.answer}"]`).parentElement;
+                        correctOption.classList.add('correct-answer');
+                    }
+                } else {
+                    // إذا لم يتم الإجابة، تظليل الإجابة الصحيحة فقط
+                    const correctOption = document.querySelector(`input[name="${questionName}"][value="${q.answer}"]`).parentElement;
+                    correctOption.classList.add('correct-answer');
+                }
+            });
+            
+            // عرض النتيجة
+            const percentage = (score / examData.questions.length) * 100;
+            resultElement.style.display = 'block';
+            
+            if (percentage >= 70) {
+                resultElement.className = 'result success';
+                resultElement.innerHTML = `
+                    <h2>مبروك! لقد نجحت في الامتحان</h2>
+                    <p>درجتك: ${score} من ${examData.questions.length}</p>
+                    <p>النسبة المئوية: ${percentage.toFixed(1)}%</p>
+                `;
+            } else {
+                resultElement.className = 'result';
+                resultElement.innerHTML = `
+                    <h2>آسف، لم تحقق النجاح هذه المرة</h2>
+                    <p>درجتك: ${score} من ${examData.questions.length}</p>
+                    <p>النسبة المئوية: ${percentage.toFixed(1)}%</p>
+                    <p>يجب أن تحصل على 70% على الأقل لاجتياز الامتحان</p>
+                `;
+            }
+            
+            // تعطيل زر التسليم
+            document.getElementById('submitBtn').disabled = true;
+            
+            // التمرير إلى النتيجة
+            resultElement.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // إضافة تأثير عند اختيار الإجابة
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.matches('input[type="radio"]')) {
+                const questionDiv = e.target.closest('.question');
+                questionDiv.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('correct-answer', 'wrong-answer');
+                });
+                
+                const selectedLabel = e.target.parentElement;
+                const questionName = e.target.name;
+                const questionIndex = parseInt(questionName.substring(1)) - 1;
+                const correctAnswer = questionsBank[currentGrade].questions[questionIndex].answer;
+                
+                if (parseInt(e.target.value) === correctAnswer) {
+                    selectedLabel.classList.add('correct-answer');
+                } else {
+                    selectedLabel.classList.add('wrong-answer');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
